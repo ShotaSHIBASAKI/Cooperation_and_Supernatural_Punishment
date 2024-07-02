@@ -1,0 +1,168 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(ggplot2)
+library(latex2exp)
+df=read.csv('FullModel_parameter_sweep_w1_u1.csv')
+ggplot(df,aes(x=Apostasy, y=a, fill
+              =R))+ geom_tile()+
+  xlab(TeX('Apostasy rate $v_-$'))+
+  ylab(TeX('Exploitation by cooperators $a$'))+
+  scale_fill_gradient(low = "white", high = "#33a02c") +
+  #xlim(c(0,0.2))+ylim(c(0, 0.8))+
+  geom_vline(xintercept=0.05, linetype='dashed')+
+  geom_hline(yintercept=0.3, linetype='dashed')+
+  theme_classic()+
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size=18))+
+  guides(fill = guide_colourbar(barwidth = 1.5,
+                                barheight = 16,
+                                title='Resoure'))
+```
+
+
+```{r}
+library(ggplot2)
+library(latex2exp)
+df=read.csv('FullModel_parameter_sweep_w1_u1.csv')
+cbbPalette =c( "#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442",  "#CC79A7", "#0072B2", "#D55E00")
+
+ggplot(df,aes(x=Apostasy, y=a, fill=as.factor(State)))+ geom_tile()+
+  xlab(TeX('Apostasy rate $v_-$'))+
+  ylab(TeX('Exploitation by cooperators $a$'))+
+  #geom_text(aes(label = State), color = "white", size = 4) +
+    geom_vline(xintercept=0.05, linetype='dashed')+
+  geom_hline(yintercept=0.3, linetype='dashed')+
+  theme_classic()+
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size=18))+
+  #scale_fill_manual(values=cbbPalette,name='State',labels=c('SN', 'CN+SN', 'SB', 'SB+SN',
+  #                              'CB', 'CB+SB', 'CB+SB+SN', 'All'))+
+  geom_point(data=df[df$Oscilate==1,],aes(shape=as.factor(Oscilate)),color='white',
+             alpha=0.5)+scale_shape_manual(values = c(4))+guides(shape='none')
+```
+
+```{r}
+library(ggplot2)
+library(latex2exp)
+library(patchwork)
+
+Plot_full = function (df, gname, w=1, u=1){
+  cbbPalette =c( "#000000", "#F0E442", "#E69F00", "#D55E00", "#56B4E9", "#0072B2","#009E73", "#CC79A7")
+　
+  aranged_cbb=c()
+  if(nrow(df[df$State==15, ])>0){
+   df[df$State==15,]$State='All'
+   aranged_cbb=c(aranged_cbb, "#CC79A7")
+  }
+  
+  if(nrow(df[df$State==8, ])>0){
+    df[df$State==8, ]$State='CB'
+    aranged_cbb=c(aranged_cbb, "#56B4E9")
+  }
+  
+  if(nrow(df[df$State==12, ])>0){
+    df[df$State==12, ]$State='CB+SB'
+    aranged_cbb=c(aranged_cbb,  "#0072B2")
+  }
+  if(nrow(df[df$State==13, ])>0){
+    df[df$State==13, ]$State='CB+SB+SN'
+    aranged_cbb=c( aranged_cbb, "#009E73")
+  }
+  
+  if(nrow(df[df$State==4, ])>0){
+    df[df$State==4, ]$State='SB'
+    aranged_cbb=c( aranged_cbb, "#E69F00")
+  }
+  if(nrow(df[df$State==5, ])>0){
+    df[df$State==5, ]$State='SB+SN'
+    aranged_cbb=c( aranged_cbb, "#D55E00")
+   }
+    
+  if(nrow(df[df$State==1, ])>0){
+    df[df$State==1, ]$State='SN'
+    aranged_cbb=c(aranged_cbb,  "#000000")
+  }
+   if(nrow(df[df$State==3, ])>0){
+    df[df$State==3, ]$State='SN+CN'
+    aranged_cbb=c( aranged_cbb, "#F0E442")
+   }
+   
+
+  
+  
+  
+  
+
+
+Rb=0.2
+b=0.8
+v1=0.15
+p=0.5
+v2_intercept=v1-(p*Rb)**u
+a_intercept=(((b*Rb)**w-(p*Rb)**u)**(1/w))/Rb
+
+
+
+
+g2=ggplot(df,aes(x=Apostasy, y=a, fill
+              =R))+ geom_tile()+
+  xlab(TeX('Apostasy rate $v_-$'))+
+  ylab(TeX('Exploitation by cooperators $a$'))+
+  scale_fill_gradient(low = "white", high = "#33a02c") +
+  geom_vline(xintercept=v2_intercept, linetype='dashed')+
+  geom_hline(yintercept=a_intercept, linetype='dashed')+
+  theme_classic()+
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size=18))+
+  guides(fill = guide_colourbar(barwidth = 1.5,
+                                barheight = 16,
+                                title='Resoure'))
+
+g1=ggplot(df,aes(x=Apostasy, y=a, fill=as.factor(State)))+ geom_tile()+
+  xlab(TeX('Apostasy rate $v_-$'))+
+  ylab(TeX('Exploitation by cooperators $a$'))+
+  #geom_text(aes(label = State), color = "white", size = 4) +
+    geom_vline(xintercept=v2_intercept, linetype='dashed')+
+  geom_hline(yintercept=a_intercept, linetype='dashed')+
+  theme_classic()+
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size=18))+
+  scale_fill_manual(values=aranged_cbb,name='')+
+ # labels=c('SN', 'CN+SN', 'SB', 'SB+SN', 'CB', 'CB+SB', 'CB+SB+SN', 'All'))+
+  #guides(fill = guide_legend(reverse = TRUE))+
+  geom_point(data=df[df$Oscilate==1,],aes(shape=as.factor(Oscilate)),
+             color='white', alpha=0.5 )+
+  geom_point(data=df[df$Oscilate==1,],aes(shape=as.factor(Oscilate)),color='white',
+             alpha=0.1, size=0.5)+scale_shape_manual(values = c(3))+guides(shape='none')
+
+g=g1+g2+ plot_layout(ncol = 2)+plot_annotation(tag_levels = 'A')& 
+  theme(plot.tag = element_text(size = 24))
+ggsave(gname, width=12, height=6)
+}
+Plot_full(df=read.csv('FullModel_parameter_sweep_w1_u1.csv'), 
+          'FullModel_parameter_sweep_w1_u1.png', w=1, u=1)
+Plot_full(df=read.csv('FullModel_parameter_sweep_w2_u1.csv'),
+          'FullModel_parameter_sweep_w2_u1.png', w=2, u=1)
+Plot_full(df=read.csv('FullModel_parameter_sweep_w1_u2.csv'), 
+          'FullModel_parameter_sweep_w1_u2.png', w=1, u=2)
+Plot_full(df=read.csv('FullModel_parameter_sweep_w05_u1.csv'),
+          'FullModel_parameter_sweep_w05_u1.png', w=0.5, u=1)
+Plot_full(df=read.csv('FullModel_parameter_sweep_w1_u05.csv'),
+          'FullModel_parameter_sweep_w1_u05.png', w=1, u=0.5)
+```
