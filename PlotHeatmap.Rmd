@@ -37,7 +37,7 @@ df=read.csv('FullModel_parameter_sweep_w1_u1.csv')
 cbbPalette =c( "#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442",  "#CC79A7", "#0072B2", "#D55E00")
 
 ggplot(df,aes(x=Apostasy, y=a, fill=as.factor(State)))+ geom_tile()+
-  xlab(TeX('Apostasy rate $v_-$'))+
+  xlab(TeX('Negative missionary  rate $v_-$'))+
   ylab(TeX('Exploitation by cooperators $a$'))+
   #geom_text(aes(label = State), color = "white", size = 4) +
     geom_vline(xintercept=0.05, linetype='dashed')+
@@ -118,7 +118,7 @@ a_intercept=(((b*Rb)**w-(p*Rb)**u)**(1/w))/Rb
 
 g2=ggplot(df,aes(x=Apostasy, y=a, fill
               =R))+ geom_tile()+
-  xlab(TeX('Apostasy rate $v_-$'))+
+  xlab(TeX('Negative missionary rate $v_-$'))+
   ylab(TeX('Exploitation by cooperators $a$'))+
   scale_fill_gradient(low = "white", high = "#33a02c") +
   geom_vline(xintercept=v2_intercept, linetype='dashed')+
@@ -133,7 +133,7 @@ g2=ggplot(df,aes(x=Apostasy, y=a, fill
                                 title='Resoure'))
 
 g1=ggplot(df,aes(x=Apostasy, y=a, fill=as.factor(State)))+ geom_tile()+
-  xlab(TeX('Apostasy rate $v_-$'))+
+  xlab(TeX('Negative missionary rate $v_-$'))+
   ylab(TeX('Exploitation by cooperators $a$'))+
   #geom_text(aes(label = State), color = "white", size = 4) +
     geom_vline(xintercept=v2_intercept, linetype='dashed')+
